@@ -2,6 +2,7 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.Linq;
 
 namespace TlkSerializer
 {
@@ -9,18 +10,22 @@ namespace TlkSerializer
     {
         static void Main(string[] args)
         {
-            var rootCommand = new RootCommand
-            {
-                new Option<FileInfo>(
-                    new string[]{"-i", "--input-file" },
-                    ".tlk or text file to convert" ),
-                new Option<FileInfo>(
-                    new string[] {"-o", "--output-file"},
-                    "Output file path"),
-                new Option<bool>(
-                    new string[] {"-z", "--from-zero"},
-                    "Start numbering output text lines from zero (ignored for .tlk generation)")
-            };
+            var inputFile = new Option<FileInfo>(
+                    new string[] { "-i", "--input-file" },
+                    ".tlk or text file to convert");
+            inputFile.IsRequired = true;
+            inputFile.ExistingOnly();
+
+            var outputFile = new Option<FileInfo>(
+                    new string[] { "-o", "--output-file" },
+                    "Output file path");
+            outputFile.IsRequired = true;
+
+            var fromZero = new Option<bool>(
+                    new string[] { "-z", "--from-zero" },
+                    "Start numbering output text lines from zero (ignored for .tlk generation)");
+
+            var rootCommand = new RootCommand{inputFile, outputFile, fromZero};
             rootCommand.Handler = CommandHandler.Create((FileInfo inputFile, FileInfo outputFile, bool fromZero) =>
             {
                 var byteStream = inputFile.OpenRead();
