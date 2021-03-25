@@ -15,6 +15,13 @@ namespace TlkSerializer
                     ".tlk or text file to convert");
             inputFile.IsRequired = true;
             inputFile.ExistingOnly();
+            inputFile.Argument.AddValidator(
+                a => a.Tokens
+                      .Select(t => t.Value)
+                      .Where(filePath => new FileInfo(filePath).Length == 0)
+                      .Select(path => $"Input file is empty: {path}")
+                      .FirstOrDefault());
+                      
 
             var outputFile = new Option<FileInfo>(
                     new string[] { "-o", "--output-file" },
@@ -44,7 +51,16 @@ namespace TlkSerializer
                 else
                 {
                     var textTlk = System.Text.Encoding.UTF8.GetString(inputBytes);
-                    var tlk = TlkParser.TextToTlk(textTlk);
+                    Tlk tlk;
+                    try
+                    {
+                        tlk = TlkParser.TextToTlk(textTlk);
+                    }
+                    catch(ArgumentException e)
+                    {
+                        System.Console.WriteLine(e.Message);
+                        return;
+                    }
                     var tlkBytes = TlkParser.TlkToBytes(tlk);
                     if (outputFile.Exists) outputFile.Delete();
                     var outStream = outputFile.Create();

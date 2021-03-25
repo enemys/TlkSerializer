@@ -69,9 +69,12 @@ namespace TlkSerializer
             var stringEntryTable = new List<string>();
 
             var buffer = new StringBuilder();
-            foreach (var line in textTlk.Split('\n'))
+            var entryMatcher = new Regex(@"^\d+ := (.*)");
+            var tlkLines = textTlk.Split('\n');
+            var firstMatch = entryMatcher.Match(tlkLines[0]);
+            if (!firstMatch.Success) throw new ArgumentException("Text file is not a tlk deserialized by TlkSerializer!");
+            foreach (var line in tlkLines)
             {
-                var entryMatcher = new Regex(@"^\d+ := (.*)");
                 var match = entryMatcher.Match(line);
                 if(match.Success)
                 {
