@@ -41,7 +41,7 @@ namespace TlkSerializer
                 byteStream.Close();
                 if (TlkParser.ValidateHeader(inputBytes))
                 {
-                    var tlk = TlkParser.Parse(inputBytes);
+                    var tlk = TlkParser.BytesToTlk(inputBytes);
                     var textTlk = TlkParser.TlkToText(tlk, fromZero);
                     if (outputFile.Exists) outputFile.Delete();
                     var outStream = outputFile.CreateText();

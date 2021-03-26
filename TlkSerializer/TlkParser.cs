@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace TlkSerializer
 {
-    static class TlkParser
+    public static class TlkParser
     {
         private const int headerSize = 20;
         private const int stringDataSize = 40;
@@ -26,7 +26,7 @@ namespace TlkSerializer
         }
 
 
-        public static Tlk Parse(byte[] tlkData)
+        public static Tlk BytesToTlk(byte[] tlkData)
         {
             if (!ValidateHeader(tlkData)) throw new ArgumentException("File is not a valid TLK 3.0 file!");
             var languageId = BitConverter.ToInt32(tlkData, 8);
@@ -97,12 +97,8 @@ namespace TlkSerializer
                 stringDataTable.Add(new StringDataElement
                 {
                     Flags = entry.Length > 0 ? 1 : 0,
-                    SoundResRef = new byte[16],
-                    VolumeVariance = 0,
-                    PitchVariance = 0,
                     OffsetToString = entry.Length > 0 ? accumulatedOffset : 0,
-                    StringSize = byteLength,
-                    SoundLength = 0.0f
+                    StringSize = byteLength
                 });
                 accumulatedOffset += byteLength;
             }

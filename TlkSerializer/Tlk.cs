@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TlkSerializer
 {
-    class Tlk
+    public class Tlk
     {
         public int LanguageId;
         public int StringCount;
