@@ -78,7 +78,7 @@ namespace TlkSerializer
                 var match = entryMatcher.Match(line);
                 if(match.Success)
                 {
-                    stringEntryTable.Add(buffer.ToString());
+                    stringEntryTable.Add(buffer.ToString().TrimEnd());
                     buffer.Clear();
                     buffer.Append(match.Groups[1]);
                 }
